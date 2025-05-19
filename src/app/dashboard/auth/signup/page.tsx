@@ -32,7 +32,7 @@ export default function SignUpForm() {
         placeholder="Email"
         className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
       />
-      {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>}
+      {/* {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>} */}
     </div>
   
     <div>
@@ -45,7 +45,7 @@ export default function SignUpForm() {
         placeholder="Password"
         className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
       />
-      {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>}
+      {/* {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>} */}
     </div>
   
     <button
