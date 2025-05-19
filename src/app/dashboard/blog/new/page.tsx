@@ -4,12 +4,7 @@ import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-import {
-  Save,
-  Send,
-  Clock,
-  CheckCircle,
-} from "lucide-react";
+import { Save, Send, Clock, CheckCircle } from "lucide-react";
 
 import { axiosServices } from "@/lib/auth";
 import { useAppSelector } from "@/lib/store";
@@ -19,15 +14,16 @@ import { useTheme } from "@/lib/features/ThemeContext";
 const ReactQuill = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill-new");
-    return React.forwardRef<HTMLDivElement, any>((props, ref) => (
-      <RQ ref={ref} {...props} />
-    ));
+    // Forward ref correctly to ReactQuill
+    return React.forwardRef<any, any>((props, ref) => <RQ ref={ref} {...props} />);
   },
   { ssr: false }
 );
 
 // Dynamically import SimpleMDE as fallback
-const SimpleMDE = dynamic(() => import("react-simplemde-editor").then(mod => mod.default), { ssr: false });
+const SimpleMDE = dynamic(() => import("react-simplemde-editor").then((mod) => mod.default), {
+  ssr: false,
+});
 
 const quillModules = {
   toolbar: [
@@ -63,7 +59,7 @@ const quillFormats = [
   "direction",
 ];
 
-// Define Blog type for state
+// Blog type definition
 interface Blog {
   id: string | null;
   title: string;
@@ -77,7 +73,7 @@ interface Blog {
 export default function BlogEditor() {
   const router = useRouter();
   const { darkMode } = useTheme();
-  const { user } = useAppSelector(state => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   const [len, setLen] = useState<number>(0);
 
@@ -103,6 +99,7 @@ export default function BlogEditor() {
   // Fetch blogs count on mount
   useEffect(() => {
     if (!user?.id || !user?.email) return;
+
     const fetchBlogs = async () => {
       try {
         const res = await axiosServices.get("/blogs", {
@@ -116,7 +113,7 @@ export default function BlogEditor() {
     fetchBlogs();
   }, [user?.id, user?.email]);
 
-  // Load Quill CSS & toggle fallback
+  // Load Quill CSS & toggle fallback if fails
   useEffect(() => {
     setIsClient(true);
     import("react-quill/dist/quill.snow.css").catch(() => {
@@ -131,7 +128,7 @@ export default function BlogEditor() {
     if (autoSaveTimerRef.current) clearInterval(autoSaveTimerRef.current);
 
     autoSaveTimerRef.current = setInterval(() => {
-      handleSaveDraft();
+      handleSaveDraft(false);
     }, 10000);
 
     return () => {
@@ -141,7 +138,7 @@ export default function BlogEditor() {
 
   // Input change handler
   const handleInputChange = (field: keyof Blog, value: string) => {
-    setCurrentBlog(prev => ({ ...prev, [field]: value }));
+    setCurrentBlog((prev) => ({ ...prev, [field]: value }));
 
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
 
@@ -202,9 +199,10 @@ export default function BlogEditor() {
 
       try {
         await axiosServices.post("/blogs/publish", newBlog);
-      } catch (error) {
-        console.error("Error publishing blog:", error);
-      } finally {
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
+
+        // Reset the editor
         setCurrentBlog({
           id: null,
           title: "",
@@ -213,9 +211,10 @@ export default function BlogEditor() {
           status: "draft",
         });
         setIsEditing(false);
+      } catch (error) {
+        console.error("Error publishing blog:", error);
+      } finally {
         setIsSaving(false);
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
       }
     }, 1000);
   };
@@ -287,19 +286,15 @@ export default function BlogEditor() {
                     Content
                   </label>
                   <div
-                    className={`${
-                      darkMode
-                        ? "border bg-white border-zinc-70 bg-zinc-80"
-                        : "border border-gray-300 bg-white"
-                    } rounded-lg`}
+                    className={`border rounded-lg ${
+                      darkMode ? "border-zinc-700 bg-zinc-800" : "border-gray-300 bg-white"
+                    }`}
                   >
                     {isClient && !useSimpleEditor && (
                       <ReactQuill
                         theme="snow"
                         value={currentBlog.content}
-                        onChange={(content: string) =>
-                          handleInputChange("content", content)
-                        }
+                        onChange={(content: string) => handleInputChange("content", content)}
                         modules={quillModules}
                         formats={quillFormats}
                         placeholder="Write your blog content here..."
@@ -309,9 +304,7 @@ export default function BlogEditor() {
                     {isClient && useSimpleEditor && (
                       <SimpleMDE
                         value={currentBlog.content}
-                        onChange={(value: string) =>
-                          handleInputChange("content", value)
-                        }
+                        onChange={(value: string) => handleInputChange("content", value)}
                         options={{
                           autofocus: false,
                           spellChecker: true,
@@ -351,7 +344,7 @@ export default function BlogEditor() {
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       handleInputChange("tags", e.target.value)
                     }
-                    placeholder="e.g., react, typescript, nextjs"
+                    placeholder="e.g., tech, programming, javascript"
                     className={`w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
                       darkMode
                         ? "bg-zinc-800 text-white border-zinc-700"
@@ -362,66 +355,83 @@ export default function BlogEditor() {
               </div>
             </div>
 
-            {/* Save & Publish Buttons */}
-            <div className="flex items-center space-x-4 mb-8">
+            {/* Buttons */}
+            <div className="flex justify-end gap-4">
               <button
-                onClick={() => handleSaveDraft()}
+                onClick={() => handleSaveDraft(true)}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition disabled:opacity-50"
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition ${
+                  isSaving
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                }`}
               >
-                <Save size={18} /> Save Draft
+                <Save size={18} />
+                Save Draft
               </button>
 
               <button
-                onClick={() => handlePublish()}
+                onClick={handlePublish}
                 disabled={isSaving || !currentBlog.title.trim()}
-                className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition disabled:opacity-50"
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition ${
+                  isSaving || !currentBlog.title.trim()
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700 text-white"
+                }`}
               >
-                <Send size={18} /> Publish
+                <Send size={18} />
+                Publish
               </button>
+            </div>
 
+            {/* Save info */}
+            <div className="mt-3 text-sm flex items-center gap-2">
               {isSaving && (
-                <div className="flex items-center gap-2 text-indigo-600 font-semibold">
-                  <Clock size={18} className="animate-spin" />
+                <span className={`flex items-center gap-1 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  <Clock size={16} className="animate-spin" />
                   Saving...
-                </div>
+                </span>
               )}
 
-              {showSuccess && (
-                <div className="flex items-center gap-2 text-green-600 font-semibold">
-                  <CheckCircle size={18} />
-                  Success!
-                </div>
+              {!isSaving && lastSaved && (
+                <span
+                  className={`flex items-center gap-1 ${
+                    darkMode ? "text-green-400" : "text-green-700"
+                  }`}
+                >
+                  <CheckCircle size={16} />
+                  Saved at {formatDate(lastSaved)}
+                </span>
+              )}
+
+              {showSuccess && !isSaving && (
+                <span
+                  className={`ml-auto font-medium ${
+                    darkMode ? "text-green-400" : "text-green-700"
+                  }`}
+                >
+                  Changes saved successfully!
+                </span>
               )}
             </div>
           </div>
 
-          {/* Sidebar / Stats */}
-          <aside
-            className={`p-4 rounded-xl shadow-lg ${
-              darkMode ? "bg-zinc-900 text-white" : "bg-white text-gray-800"
-            }`}
-          >
-            <h2 className="text-xl font-semibold mb-4">Stats & Info</h2>
-
-            <p>
-              <strong>Blog Count:</strong> {len}
-            </p>
-
-            {lastSaved && (
-              <p>
-                <strong>Last Saved:</strong> {formatDate(lastSaved)}
-              </p>
-            )}
-
-            {currentBlog.status && (
-              <p>
-                <strong>Status:</strong>{" "}
-                {currentBlog.status.charAt(0).toUpperCase() +
-                  currentBlog.status.slice(1)}
-              </p>
-            )}
-          </aside>
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div
+              className={`sticky top-24 p-4 rounded-xl shadow-lg ${
+                darkMode ? "bg-zinc-900 text-white" : "bg-white text-gray-800"
+              }`}
+            >
+              <h3 className="text-lg font-semibold mb-2">Blog Info</h3>
+              <p>Total blogs: <strong>{len}</strong></p>
+              <p>Status: <strong>{currentBlog.status}</strong></p>
+              {currentBlog.updatedAt && (
+                <p>Last updated: <strong>{formatDate(currentBlog.updatedAt)}</strong></p>
+              )}
+              {currentBlog.author && <p>Author ID: <strong>{currentBlog.author}</strong></p>}
+            </div>
+          </div>
         </div>
       </div>
     </div>

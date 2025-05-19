@@ -1,36 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useRef, MutableRefObject } from "react";
+import React, { useState, useEffect, useRef, MutableRefObject, forwardRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-const ReactQuill = dynamic<
-  {
-    forwardedRef: MutableRefObject<any> | ((instance: any) => void) | null;
-    value: string;
-    onChange: (content: string) => void;
-    modules: object;
-    formats: string[];
-    placeholder?: string;
-    theme: string;
-  }
->(
+const ReactQuill = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill-new");
-
-    return function comp({ forwardedRef, ...props }) {
-      return <RQ ref={forwardedRef} {...props} />;
-    };
+    // Wrap with forwardRef to correctly forward the ref
+    return forwardRef((props, ref) => <RQ ref={ref} {...props} />);
   },
   { ssr: false }
 );
 
-import {
-  Save,
-  Send,
-  Clock,
-  CheckCircle,
-} from "lucide-react";
+import { Save, Send, Clock, CheckCircle } from "lucide-react";
 import { axiosServices } from "@/lib/auth";
 import { useAppSelector } from "@/lib/store";
 import { useTheme } from "@/lib/features/ThemeContext";
@@ -110,15 +93,13 @@ const SimpleMDE = dynamic(() => import("react-simplemde-editor").then((mod) => m
 });
 
 export default function BlogEditor() {
-  const { darkMode, toggleDarkMode } = useTheme();
+  const { darkMode } = useTheme();
   const router = useRouter();
 
-  // useParams returns a readonly object or undefined. Fix with optional chaining + string
   const params = useParams() as { id?: string };
   const id = params?.id ?? null;
 
   const { user } = useAppSelector((state) => state.auth);
-  // console.log(user);
 
   const [blogs, setBlogs] = useState<Blog[]>(initialBlogs);
   const [currentBlog, setCurrentBlog] = useState<Blog>({
@@ -157,7 +138,6 @@ export default function BlogEditor() {
   const [isEditing, setIsEditing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-
   const [isSaving, setIsSaving] = useState(false);
 
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -175,7 +155,6 @@ export default function BlogEditor() {
         clearInterval(autoSaveTimerRef.current);
       }
     };
-    // Only run when currentBlog changes
   }, [currentBlog]);
 
   const handleInputChange = (field: keyof Blog, value: string) => {
@@ -309,7 +288,6 @@ export default function BlogEditor() {
                   <div className="border dark:bg-white border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-00 text-gray-900 dark:text-white">
                     {isClient && !useSimpleEditor && (
                       <ReactQuill
-                        forwardedRef={null}
                         theme="snow"
                         value={currentBlog.content}
                         onChange={(content) => handleInputChange("content", content)}
@@ -318,10 +296,10 @@ export default function BlogEditor() {
                         placeholder="Write your blog content here..."
                       />
                     )}
-                    {isClient && useSimpleEditor && (
+                    {useSimpleEditor && (
                       <SimpleMDE
                         value={currentBlog.content}
-                        onChange={(value) => handleInputChange("content", value)}
+                        onChange={(content) => handleInputChange("content", content)}
                         options={{
                           spellChecker: false,
                           placeholder: "Write your blog content here...",
@@ -343,83 +321,90 @@ export default function BlogEditor() {
                     id="tags"
                     value={currentBlog.tags}
                     onChange={(e) => handleInputChange("tags", e.target.value)}
-                    placeholder="e.g. react, nextjs, webdev"
+                    placeholder="e.g. react,nextjs,webdev"
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
 
                 <div className="flex items-center space-x-4">
                   <button
-                    type="button"
                     onClick={handleSaveDraft}
                     disabled={isSaving}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+                    className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
-                    <Save size={20} />
+                    <Save className="mr-2 h-5 w-5" />
                     Save Draft
                   </button>
 
                   <button
-                    type="button"
                     onClick={handlePublish}
-                    disabled={isSaving || !currentBlog.title.trim()}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+                    disabled={isSaving}
+                    className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
-                    <Send size={20} />
+                    <Send className="mr-2 h-5 w-5" />
                     Publish
                   </button>
 
                   {isSaving && (
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                      <Clock size={18} className="animate-spin" />
-                      Saving...
+                    <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
+                      <Clock className="animate-spin h-5 w-5" />
+                      <span>Saving...</span>
                     </div>
                   )}
 
-                  {showSuccess && (
-                    <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-                      <CheckCircle size={18} />
-                      Saved Successfully
+                  {showSuccess && !isSaving && (
+                    <div className="flex items-center space-x-1 text-green-500 dark:text-green-400">
+                      <CheckCircle className="h-5 w-5" />
+                      <span>Saved successfully</span>
                     </div>
                   )}
                 </div>
+
+                {lastSaved && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    Last saved at: {formatDate(lastSaved)}
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
-          <aside className="lg:col-span-1">
+          <div>
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                Your Blogs
-              </h2>
-              <ul className="space-y-4 max-h-[600px] overflow-y-auto">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Blog Posts</h2>
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700 max-h-[600px] overflow-auto">
                 {blogs.map((blog) => (
                   <li
-                    key={blog.id?.toString()}
-                    className={`p-4 rounded-lg border cursor-pointer
-                      ${
-                        blog.status === "draft"
-                          ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-900"
-                          : "border-green-500 bg-green-50 dark:bg-green-900"
-                      }
-                    `}
-                    onClick={() => router.push(`/blogs/${blog.id}`)}
+                    key={blog.id}
+                    className="py-3 cursor-pointer hover:bg-indigo-100 dark:hover:bg-gray-700 rounded-md"
+                    onClick={() => {
+                      setCurrentBlog(blog);
+                      setIsEditing(true);
+                    }}
                   >
-                    <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                    <h3 className="text-md font-semibold text-indigo-700 dark:text-indigo-400">
                       {blog.title}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Status: {blog.status.charAt(0).toUpperCase() + blog.status.slice(1)}
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      Status:{" "}
+                      <span
+                        className={`capitalize font-semibold ${
+                          blog.status === "published"
+                            ? "text-green-600 dark:text-green-400"
+                            : "text-yellow-600 dark:text-yellow-400"
+                        }`}
+                      >
+                        {blog.status}
+                      </span>
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      Last Updated:{" "}
-                      {blog.updatedAt ? formatDate(blog.updatedAt) : "N/A"}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Updated: {blog.updatedAt ? formatDate(blog.updatedAt) : "N/A"}
                     </p>
                   </li>
                 ))}
               </ul>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     </div>
