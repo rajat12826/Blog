@@ -19,7 +19,8 @@ export default function SignUpForm() {
   };
 
   return (
-    <form
+ <div>
+     <form
     onSubmit={handleSubmit(onSubmit)}
     className="max-w-md mx-auto p-6 bg-white/80 dark:bg-black/60 backdrop-blur-md rounded-2xl shadow-2xl space-y-5 border border-gray-200 dark:border-gray-700"
   >
@@ -57,6 +58,7 @@ export default function SignUpForm() {
   
     {message && <p className="text-sm text-center mt-3 text-gray-600 dark:text-gray-300">{message}</p>}
   </form>
+ </div>
   
   );
 }
