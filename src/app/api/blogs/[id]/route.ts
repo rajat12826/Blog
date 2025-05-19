@@ -3,9 +3,18 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function extractIdFromUrl(url: string): string | null {
+  const segments = url.split("/");
+  return segments[segments.length - 1] || null;
+}
+
 // GET handler
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
-  const id = context.params.id;
+export async function GET(req: NextRequest) {
+  const id = extractIdFromUrl(req.url);
+
+  if (!id) {
+    return NextResponse.json({ message: "Missing blog ID" }, { status: 400 });
+  }
 
   try {
     const blog = await prisma.blog.findUnique({
@@ -24,8 +33,12 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 }
 
 // DELETE handler
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
-  const id = context.params.id;
+export async function DELETE(req: NextRequest) {
+  const id = extractIdFromUrl(req.url);
+
+  if (!id) {
+    return NextResponse.json({ message: "Missing blog ID" }, { status: 400 });
+  }
 
   try {
     const blog = await prisma.blog.findUnique({
