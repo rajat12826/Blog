@@ -34,11 +34,11 @@ function Page() {
       }
       try {
         setLoading(true);
+        // API returns { data: Profile }
         const res = await axiosServices.post<{ data: Profile }>("/auth/profile", {
           email: user.email,
         });
-        // Assuming the API response has a "data" field holding the profile
-        setProfile(res.data);
+        setProfile(res.data.data); // Extract nested data here!
         setError(null);
       } catch (err) {
         setError("Failed to load profile");
