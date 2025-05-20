@@ -51,18 +51,18 @@ The architecture of this application is designed for modularity and separation o
 
 ## 🛠️ Technologies Used
 
-- **Frontend**: React.js (or Next.js, Angular, or Vue.js)
-- **Backend**: Node.js with Express.js (or Django, Flask)
-- **Database**: MongoDB or PostgreSQL (or any other SQL/NoSQL database)
-- **Authentication**: JWT or Session-based Authentication (optional)
-- **State Management**: React State (or appropriate solution for Angular/Vue)
+- **Frontend**: Next.js
+- **Backend**: Node.js with Express.js 
+- **Database**: PostgreSQL 
+- **Authentication**: JWT or Session-based Authentication 
+- **State Management**: React Redux 
 
 ## ⚙️ Setup and Installation
 
 ### Frontend
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/blog-editor.git
+   git clone https://github.com/rajat12826/Blog
    cd blog-editor/frontend
    ```
 
@@ -79,7 +79,7 @@ The architecture of this application is designed for modularity and separation o
 ### Backend
 1. Navigate to the backend directory:
    ```bash
-   cd blog-editor/backend
+   cd blog/src/api
    ```
 
 2. Install dependencies:
