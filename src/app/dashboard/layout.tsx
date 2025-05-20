@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from '@/lib/features/ThemeContext';
+import useAuthRedirect from '@/lib/features/useAuthRedirect';
 import { store } from '@/lib/store';
 import {
   Bell, ChevronDown, FileText, LogOut, Menu, Moon,
@@ -15,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [user, setUser] = useState<any>(null);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
@@ -25,19 +26,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ]);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [u, setu] = useState<any>(null)
-  useEffect(() => {
+  
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   setUser(storedUser);
 
-    const storedUser = localStorage.getItem("user");
-    setu(storedUser)
-    if (!storedUser) {
+  //   const publicPaths = ["/dashboard/auth/signin", "/dashboard/auth/signup"];
 
-      router.push("/dashboard/auth/signin");
-    }
-  }, []);
+  //   // If user not logged in AND current path is not in publicPaths, redirect to signin
+  //   if (!storedUser && !publicPaths.includes(router.pathname)) {
+  //     router.push("/dashboard/auth/signin");
+  //   }
+  // }, [router.pathname]);
+  const user = useAuthRedirect();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setUser(null);
+    // setUser(null);
     router.push("/dashboard/auth/signin");
   };
 
