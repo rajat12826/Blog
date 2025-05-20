@@ -1,37 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog Editor with Auto-Save and Publish Feature 🚀
 
-## Getting Started
+This project is a full-stack application for managing blog posts with an auto-save feature, including the ability to save drafts, publish posts, and edit existing content. The frontend allows users to write, update, and manage blog posts, while the backend handles storage, API interactions, and status management.
 
-First, run the development server:
+## 🚀 Features
+- **Frontend**: Built with React.js, Next.js, Angular, or Vue.js (Your choice)
+  - Create blog posts with a **Title** (text input), **Content** (rich text editor or textarea), and optional **Tags** (comma-separated).
+  - **Save as Draft** and **Publish** buttons for easy post management.
+  - **Auto-Save Draft** every 30 seconds or after 5 seconds of inactivity.
+  - Display a list of **All Blogs** (published and drafts separated).
+  - **Edit** and update existing drafts/posts.
+  
+- **Backend**: Built with Node.js and Express.js (or Django/Flask)
+  - Define a **Blog schema/model** with fields:
+    - `id`: Unique identifier
+    - `title`: Blog post title
+    - `content`: Blog post content
+    - `tags`: Optional tags for categorization
+    - `status`: Draft or Published
+    - `created_at`: Timestamp of creation
+    - `updated_at`: Timestamp of last update
+  - API Endpoints:
+    - `POST /api/blogs/save-draft`: Save or update a draft.
+    - `POST /api/blogs/publish`: Save and publish an article.
+    - `GET /api/blogs`: Retrieve all blogs.
+    - `GET /api/blogs/:id`: Retrieve a single blog by ID.
+  
+- **Bonus Features**:
+  - Auto-save after 5 seconds of inactivity using **debouncing**.
+  - **Toast notifications** to visually inform users when an article is auto-saved.
+  - **JWT Authentication** for protected APIs (optional but preferred).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 Architecture Overview
+
+The architecture of this application is designed for modularity and separation of concerns. Here's a simplified diagram:
+
+```
+[ User (Browser) ]
+        |
+        V
+[ Frontend (React/Angular/Vue) ]
+        |
+ REST API Calls (HTTP)
+        |
+        V
+[ Backend (Express/Django/Flask API Server) ]
+        |
+        V
+[ Database (MongoDB/PostgreSQL) ]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Technologies Used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js
+- **Backend**: Node.js with Express.js 
+- **Database**: PostgreSQL 
+- **Authentication**: JWT or Session-based Authentication 
+- **State Management**: React Redux 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ⚙️ Setup and Installation
 
-## Learn More
+### Frontend
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rajat12826/Blog
+   cd blog-editor/frontend
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Run the development server:
+   ```bash
+   npm start
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Backend
+1. Navigate to the backend directory:
+   ```bash
+   cd blog/src/api
+   ```
 
-## Deploy on Vercel
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Set up environment variables for database connection and JWT authentication (if applicable).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Blog
+4. Run the server:
+   ```bash
+   npm start
+   ```
+
+### Database
+- Set up your database (MongoDB, PostgreSQL, etc.) and configure the connection in your backend.
+
+## 🧑‍💻 API Endpoints
+
+### POST `/api/blogs/save-draft`
+- **Description**: Save or update a draft blog post.
+- **Request Body**:
+  ```json
+  {
+    "title": "Blog Title",
+    "content": "Blog content...",
+    "tags": ["tag1", "tag2"],
+    "status": "draft"
+  }
+  ```
+
+### POST `/api/blogs/publish`
+- **Description**: Save and publish a blog post.
+- **Request Body**:
+  ```json
+  {
+    "title": "Blog Title",
+    "content": "Blog content...",
+    "tags": ["tag1", "tag2"],
+    "status": "published"
+  }
+  ```
+
+### GET `/api/blogs`
+- **Description**: Retrieve a list of all blog posts (published and drafts).
+- **Response**:
+  ```json
+  [
+    {
+      "id": "1",
+      "title": "Blog Title",
+      "status": "published",
+      "created_at": "2025-05-20T12:00:00Z",
+      "updated_at": "2025-05-20T12:30:00Z"
+    },
+    ...
+  ]
+  ```
+
+### GET `/api/blogs/:id`
+- **Description**: Retrieve a single blog post by its ID.
+- **Response**:
+  ```json
+  {
+    "id": "1",
+    "title": "Blog Title",
+    "content": "Blog content...",
+    "tags": ["tag1", "tag2"],
+    "status": "draft",
+    "created_at": "2025-05-20T12:00:00Z",
+    "updated_at": "2025-05-20T12:30:00Z"
+  }
+  ```
+
+
+
+## 👨‍💻 Contribution
+
+Feel free to contribute by forking the repository, creating a branch, and submitting a pull request. We welcome bug fixes, enhancements, and documentation improvements!
+
+
+
+---
+
+Enjoy building your blog editor! 😄
