@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import "@/styles/quill.snow.css";
+import 'react-quill/dist/quill.snow.css';
 
 import { Save, Send, Clock, CheckCircle } from "lucide-react";
 

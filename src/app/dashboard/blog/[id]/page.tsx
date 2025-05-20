@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, MutableRefObject, forwardRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import "@/styles/quill.snow.css";
+import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(
   async () => {

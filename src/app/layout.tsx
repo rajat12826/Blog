@@ -32,7 +32,8 @@ export default function RootLayout({
   return (
     <html lang="en" >
          <head>
-        
+      
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
         <link rel="icon" href="/favicon.png" type="image/x-icon" />
       
       </head>
