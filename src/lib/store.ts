@@ -19,7 +19,8 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // Reload action creator
 const init = () => {
-  store.dispatch(fetchCurrentUser());
+  store.dispatch(fetchCurrentUser(null));
+
 };
 
 init();
