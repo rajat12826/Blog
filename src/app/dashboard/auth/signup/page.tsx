@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { signup } from "@/lib/auth";
 import { useState } from "react";
 import { useTheme } from "@/lib/features/ThemeContext";
+import Link from "next/link";
 
 export default function SignUpForm() {
   const{darkMode,toggleDarkMode}=useTheme()
@@ -55,6 +56,12 @@ export default function SignUpForm() {
     >
       Sign Up
     </button>
+    <h1
+   className="text-white  flex justify-center gap-4"
+     
+    >
+     Already Have An Account? <Link href="/dashboard/auth/signin"  className="text-sm text-center flex justify-center items-center">Sign In</Link>
+    </h1>
   
     {message && <p className="text-sm text-center mt-3 text-gray-600 dark:text-gray-300">{message}</p>}
   </form>

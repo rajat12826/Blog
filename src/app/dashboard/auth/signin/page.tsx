@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { login } from "@/lib/features/authslice";
 import { useTheme } from "@/lib/features/ThemeContext";
+import Link from "next/link";
 
 export default function SignInForm() {
   const{darkMode,toggleDarkMode}=useTheme()
@@ -64,7 +65,14 @@ console.log(user);
     >
       Sign In
     </button>
-  
+    
+    <h1
+   className="text-white  flex justify-center gap-4"
+     
+    >
+     Don't Have An Account? <Link href="/dashboard/auth/signup"  className="text-sm text-center flex justify-center items-center">Sign Up</Link>
+    </h1>
+   
     {message && <p className="text-sm text-center mt-3 text-gray-600 dark:text-gray-300">{message}</p>}
   </form>
   </div>
