@@ -158,7 +158,7 @@ export default function BlogEditor() {
 
       const newBlog: Blog = {
         ...currentBlog,
-        id: currentBlog.id ?? undefined,
+        id: currentBlog.id ?? null,
         status: "savedraft",
         updatedAt: now,
         author: user?.id ?? null,

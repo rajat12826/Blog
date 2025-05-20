@@ -7,8 +7,10 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill-new");
-    // Wrap with forwardRef to correctly forward the ref
-    return forwardRef((props, ref) => <RQ ref={ref} {...props} />);
+    // Use typeof RQ for correct typing
+    return forwardRef<InstanceType<typeof RQ>, any>((props, ref) => (
+      <RQ ref={ref} {...props} />
+    ));
   },
   { ssr: false }
 );
@@ -290,7 +292,7 @@ export default function BlogEditor() {
                       <ReactQuill
                         theme="snow"
                         value={currentBlog.content}
-                        onChange={(content) => handleInputChange("content", content)}
+                        onChange={(content:any) => handleInputChange("content", content)}
                         modules={quillModules}
                         formats={quillFormats}
                         placeholder="Write your blog content here..."
