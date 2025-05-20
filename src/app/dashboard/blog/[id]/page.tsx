@@ -288,8 +288,8 @@ export default function BlogEditor() {
                   >
                     Content
                   </label>
-                  <div className="border dark:bg-white border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-00 text-gray-900 dark:text-white">
-                    {isClient && !useSimpleEditor && (
+                  <div className="border dark:bg-white border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-00 text-gray-900">
+                    {(
                       <ReactQuill
                         theme="snow"
                         value={currentBlog.content}
@@ -299,7 +299,7 @@ export default function BlogEditor() {
                         placeholder="Write your blog content here..."
                       />
                     )}
-                    {useSimpleEditor && (
+                    {/* {useSimpleEditor && (
                       <SimpleMDE
                         value={currentBlog.content}
                         onChange={(content) => handleInputChange("content", content)}
@@ -308,7 +308,7 @@ export default function BlogEditor() {
                           placeholder: "Write your blog content here...",
                         }}
                       />
-                    )}
+                    )} */}
                   </div>
                 </div>
 

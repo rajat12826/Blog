@@ -14,8 +14,8 @@ export default function useAuthRedirect() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
+    const storedUser = localStorage.getItem("token");
+    console.log(storedUser);
     if (storedUser) {
       try {
         const parsedUser: User = JSON.parse(storedUser);
@@ -31,7 +31,8 @@ export default function useAuthRedirect() {
 
     const publicPaths = ["/dashboard/auth/signin", "/dashboard/auth/signup"];
 
-    if (!storedUser && !publicPaths.includes(pathname)) {
+
+    if (!storedUser&& !publicPaths.includes(pathname)) {
       router.push("/dashboard/auth/signin");
     }
   }, [pathname, router]);

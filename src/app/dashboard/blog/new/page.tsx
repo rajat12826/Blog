@@ -288,10 +288,10 @@ export default function BlogEditor() {
                   </label>
                   <div
                     className={`border rounded-lg ${
-                      darkMode ? "border-zinc-700 bg-zinc-800" : "border-gray-300 bg-white"
+                      darkMode ? "border-zinc-700 bg-white text-black" : "border-gray-300 bg-white text-black"
                     }`}
                   >
-                    {isClient && !useSimpleEditor && (
+                    {(
                       <ReactQuill
                         theme="snow"
                         value={currentBlog.content}
@@ -302,20 +302,9 @@ export default function BlogEditor() {
                       />
                     )}
 
-                    {isClient && useSimpleEditor && (
-                      <SimpleMDE
-                        value={currentBlog.content}
-                        onChange={(value: string) => handleInputChange("content", value)}
-                        options={{
-                          autofocus: false,
-                          spellChecker: true,
-                          placeholder: "Write your blog content here...",
-                          status: ["lines", "words"],
-                        }}
-                      />
-                    )}
+                 
 
-                    {!isClient && (
+                    {/* {!isClient && (
                       <textarea
                         className={`w-full px-4 py-2 rounded-lg ${
                           darkMode ? "bg-zinc-800 text-white" : "bg-white text-black"
@@ -324,7 +313,7 @@ export default function BlogEditor() {
                         placeholder="Loading editor..."
                         disabled
                       />
-                    )}
+                    )} */}
                   </div>
                 </div>
 
