@@ -26,10 +26,9 @@
     "next": "15.3.2",
     "next-auth": "^4.24.11",
     "prisma": "^6.8.1",
+    "quill": "^2.0.3",
     "react": "^18.2.0",
-"react-dom": "^18.2.0",
-
-   
+    "react-dom": "^18.2.0",
     "react-froala-wysiwyg": "^4.5.2",
     "react-hook-form": "^7.56.3",
     "react-quill": "^2.0.0",

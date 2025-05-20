@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, MutableRefObject, forwardRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import "@/styles/quill.snow.css";
 
 const ReactQuill = dynamic(
   async () => {
@@ -129,13 +130,13 @@ export default function BlogEditor() {
   const [isClient, setIsClient] = useState(false);
   const [useSimpleEditor, setUseSimpleEditor] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
+  // useEffect(() => {
+  //   setIsClient(true);
 
-    import("react-quill/dist/quill.snow.css").catch(() => {
-      setUseSimpleEditor(true);
-    });
-  }, []);
+  //   import("react-quill/dist/quill.snow.css").catch(() => {
+  //     setUseSimpleEditor(true);
+  //   });
+  // }, []);
 
   const [isEditing, setIsEditing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -330,7 +331,7 @@ export default function BlogEditor() {
 
                 <div className="flex items-center space-x-4">
                   <button
-                    onClick={handleSaveDraft}
+                    onClick={() => handleSaveDraft()}
                     disabled={isSaving}
                     className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >

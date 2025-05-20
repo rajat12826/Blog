@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { id: 2, text: "Your draft was auto-saved", time: "Yesterday", read: true }
   ]);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [u, setu] = useState(null)
+  const [u, setu] = useState<any>(null)
   useEffect(() => {
 
     const storedUser = localStorage.getItem("user");

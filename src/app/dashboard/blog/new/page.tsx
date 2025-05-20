@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import "@/styles/quill.snow.css";
 
 import { Save, Send, Clock, CheckCircle } from "lucide-react";
 
@@ -114,12 +115,12 @@ export default function BlogEditor() {
   }, [user?.id, user?.email]);
 
   // Load Quill CSS & toggle fallback if fails
-  useEffect(() => {
-    setIsClient(true);
-    import("react-quill/dist/quill.snow.css").catch(() => {
-      setUseSimpleEditor(true);
-    });
-  }, []);
+  // useEffect(() => {
+  //   setIsClient(true);
+  //   import("react-quill/dist/quill.snow.css").catch(() => {
+  //     setUseSimpleEditor(true);
+  //   });
+  // }, []);
 
   // Auto-save interval for draft
   useEffect(() => {
